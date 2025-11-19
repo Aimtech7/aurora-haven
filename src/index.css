@@ -50,6 +50,7 @@ All colors MUST be HSL.
     /* Soft shadows */
     --shadow-soft: 0 2px 20px -4px hsl(260 35% 65% / 0.15);
     --shadow-card: 0 4px 30px -8px hsl(260 35% 65% / 0.2);
+    --shadow-elegant: 0 10px 40px -10px hsl(260 35% 65% / 0.3);
     
     /* Smooth transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -98,6 +99,7 @@ All colors MUST be HSL.
     
     --shadow-soft: 0 2px 20px -4px hsl(260 35% 70% / 0.3);
     --shadow-card: 0 4px 30px -8px hsl(260 35% 70% / 0.4);
+    --shadow-elegant: 0 10px 40px -10px hsl(260 35% 70% / 0.5);
 
     --sidebar-background: 240 12% 12%;
     --sidebar-foreground: 252 40% 96%;
