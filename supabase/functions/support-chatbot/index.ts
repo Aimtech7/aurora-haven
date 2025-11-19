@@ -12,15 +12,16 @@ serve(async (req) => {
   }
 
   try {
-    const { messages } = await req.json();
-    console.log('Received messages:', messages);
+    const { messages, language = 'en' } = await req.json();
+    console.log('Received messages:', messages, 'Language:', language);
     
     const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
     if (!OPENAI_API_KEY) {
       throw new Error('OPENAI_API_KEY not configured');
     }
 
-    const systemPrompt = `You are a compassionate AI support assistant for survivors of digital violence. Your role is to provide:
+    const systemPrompts = {
+      en: `You are a compassionate AI support assistant for survivors of digital violence. Your role is to provide:
 
 1. **Immediate Safety Guidance**: Help assess immediate safety concerns
 2. **Emotional Support**: Provide empathetic, trauma-informed responses
@@ -40,7 +41,32 @@ CRITICAL GUIDELINES:
 - Respect their autonomy in decision-making
 - Maintain strict confidentiality
 
-If the situation involves immediate danger, encourage them to contact local emergency services or use the emergency exit feature.`;
+If the situation involves immediate danger, encourage them to contact local emergency services or use the emergency exit feature.`,
+      
+      sw: `Wewe ni msaidizi wa AI mwenye huruma kwa waathirika wa unyanyasaji wa kidijitali. Jukumu lako ni kutoa:
+
+1. **Mwongozo wa Usalama wa Haraka**: Saidia kutathmini wasiwasi wa usalama wa haraka
+2. **Msaada wa Kihisia**: Toa majibu ya huruma na ya ufahamu wa kitrauma
+3. **Hatua za Vitendo**: Toa ushauri wazi na unaotekelezeka juu ya:
+   - Kurekodi ushahidi
+   - Kulinda akaunti
+   - Ulinzi wa faragha
+   - Kuripoti kwa mamlaka
+4. **Uongozi wa Rasilimali**: Ongoza watumiaji kwenye huduma za msaada zinazofaa
+
+MIONGOZO MUHIMU:
+- Kuwa na joto, uvumilivu, na usihukumu
+- Thibitisha uzoefu na hisia zao
+- Tumia lugha wazi na rahisi
+- Usitoe ushauri wa kimatibabu au wa kisheria - waelekeze kwa wataalamu
+- Sisitiza kuwa kilichotokea si kosa lao
+- Heshimu uhuru wao katika kufanya maamuzi
+- Dumisha usiri mkubwa
+
+Kama hali inahusisha hatari ya haraka, wahimize kuwasiliana na huduma za dharura za ndani au kutumia kipengele cha kutoroka dharura.`
+    };
+
+    const systemPrompt = systemPrompts[language as 'en' | 'sw'] || systemPrompts.en;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',

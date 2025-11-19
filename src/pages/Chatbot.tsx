@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { MessageCircle, Send, Loader2 } from "lucide-react";
+import { MessageCircle, Send, Loader2, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -7,17 +7,35 @@ import { EmergencyButton } from "@/components/EmergencyButton";
 import { Header } from "@/components/Header";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
 }
 
+const WELCOME_MESSAGES = {
+  en: "Hello, I'm here to support you. You're in a safe space. How can I help you today?",
+  sw: "Habari, niko hapa kukusaidia. Uko mahali salama. Ninaweza kukusaidiaje leo?",
+};
+
+const PLACEHOLDERS = {
+  en: "Type your message... (Press Enter to send, Shift+Enter for new line)",
+  sw: "Andika ujumbe wako... (Bonyeza Enter kutuma, Shift+Enter kwa mstari mpya)",
+};
+
 const Chatbot = () => {
+  const [language, setLanguage] = useState<"en" | "sw">("en");
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Hello, I'm here to support you. You're in a safe space. How can I help you today?",
+      content: WELCOME_MESSAGES.en,
     },
   ]);
   const [input, setInput] = useState("");
@@ -45,6 +63,7 @@ const Chatbot = () => {
         },
         body: JSON.stringify({
           messages: [...messages, { role: "user", content: userMessage }],
+          language,
         }),
       });
 
@@ -150,9 +169,31 @@ const Chatbot = () => {
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-primary">
             <MessageCircle className="w-6 h-6 text-white" />
           </div>
-          <h1 className="text-2xl font-bold">AI Support Chat</h1>
+          <div className="flex items-center justify-center gap-3">
+            <h1 className="text-2xl font-bold">
+              {language === "en" ? "AI Support Chat" : "Mazungumzo ya Msaada wa AI"}
+            </h1>
+            <Select value={language} onValueChange={(val: "en" | "sw") => {
+              setLanguage(val);
+              setMessages([{
+                role: "assistant",
+                content: WELCOME_MESSAGES[val],
+              }]);
+            }}>
+              <SelectTrigger className="w-[140px]">
+                <Languages className="w-4 h-4 mr-2" />
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="en">English</SelectItem>
+                <SelectItem value="sw">Kiswahili</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <p className="text-sm text-muted-foreground">
-            Compassionate guidance available 24/7
+            {language === "en" 
+              ? "Compassionate guidance available 24/7"
+              : "Mwongozo wa huruma unapatikana saa 24/7"}
           </p>
         </div>
 
@@ -199,7 +240,7 @@ const Chatbot = () => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Type your message... (Press Enter to send, Shift+Enter for new line)"
+            placeholder={PLACEHOLDERS[language]}
             className="resize-none"
             rows={2}
           />
