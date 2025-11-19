@@ -68,15 +68,24 @@ const Chatbot = () => {
       });
 
       if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        
         if (response.status === 429) {
-          toast.error("Rate limit exceeded. Please try again in a moment.");
+          toast.error("Too many requests. Please wait a moment before trying again.");
+          return;
+        }
+        if (response.status === 401 || response.status === 403) {
+          toast.error("Authentication error. Please contact support.");
           return;
         }
         if (response.status === 402) {
-          toast.error("Service temporarily unavailable. Please try again later.");
+          toast.error("Service requires additional credits. Please contact support.");
           return;
         }
-        throw new Error("Failed to get response");
+        
+        console.error("API error:", response.status, errorData);
+        toast.error(errorData.error || "Failed to get response. Please try again.");
+        return;
       }
 
       if (!response.body) throw new Error("No response body");
