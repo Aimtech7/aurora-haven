@@ -1,3 +1,4 @@
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
@@ -14,9 +15,10 @@ serve(async (req) => {
     const { messages, language = 'en' } = await req.json();
     console.log('Received messages:', messages, 'Language:', language);
     
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY not configured');
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    if (!OPENAI_API_KEY) {
+      console.error('OPENAI_API_KEY not configured');
+      throw new Error('OPENAI_API_KEY not configured');
     }
 
     const systemPrompts = {
@@ -67,50 +69,74 @@ Kama hali inahusisha hatari ya haraka, wahimize kuwasiliana na huduma za dharura
 
     const systemPrompt = systemPrompts[language as 'en' | 'sw'] || systemPrompts.en;
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    console.log('Calling OpenAI API with model: gpt-4o-mini');
+    
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: systemPrompt },
           ...messages
         ],
         stream: true,
+        temperature: 0.7,
+        max_tokens: 1000,
       }),
     });
 
+    console.log('OpenAI API response status:', response.status);
+
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('OpenAI API error:', response.status, errorText);
+      
       if (response.status === 429) {
         console.error('Rate limit exceeded');
-        return new Response(JSON.stringify({ error: 'Rate limits exceeded, please try again later.' }), {
+        return new Response(JSON.stringify({ 
+          error: 'Too many requests. Please wait a moment and try again.' 
+        }), {
           status: 429,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
+      if (response.status === 401) {
+        console.error('Invalid API key');
+        return new Response(JSON.stringify({ 
+          error: 'API authentication failed. Please check your API key.' 
+        }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
       if (response.status === 402) {
-        console.error('Payment required');
-        return new Response(JSON.stringify({ error: 'Payment required, please add funds to your workspace.' }), {
+        console.error('Insufficient credits');
+        return new Response(JSON.stringify({ 
+          error: 'Insufficient credits. Please add credits to your OpenAI account.' 
+        }), {
           status: 402,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
-      const errorText = await response.text();
-      console.error('AI gateway error:', response.status, errorText);
-      return new Response(JSON.stringify({ error: 'AI gateway error' }), {
+      
+      return new Response(JSON.stringify({ 
+        error: `OpenAI API error: ${response.status}` 
+      }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
+    console.log('Streaming response back to client');
     return new Response(response.body, {
       headers: { ...corsHeaders, 'Content-Type': 'text/event-stream' },
     });
   } catch (error) {
-    console.error('Error in support-chatbot:', error);
+    console.error('Error in support-chatbot function:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return new Response(JSON.stringify({ error: errorMessage }), {
       status: 500,
