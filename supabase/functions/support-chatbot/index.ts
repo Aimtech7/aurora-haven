@@ -16,10 +16,7 @@ serve(async (req) => {
     console.log('Received messages:', messages, 'Language:', language);
     
     const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
-    if (!OPENAI_API_KEY) {
-      console.error('OPENAI_API_KEY not configured');
-      throw new Error('OPENAI_API_KEY not configured');
-    }
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
     const systemPrompts = {
       en: `You are a compassionate AI support assistant for survivors of digital violence. Your role is to provide:
@@ -69,31 +66,79 @@ Kama hali inahusisha hatari ya haraka, wahimize kuwasiliana na huduma za dharura
 
     const systemPrompt = systemPrompts[language as 'en' | 'sw'] || systemPrompts.en;
 
-    console.log('Calling OpenAI API with model: gpt-4o-mini');
-    
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          ...messages
-        ],
-        stream: true,
-        temperature: 0.7,
-        max_tokens: 1000,
-      }),
-    });
+    // Try OpenAI first
+    let response: Response | null = null;
+    let provider = 'OpenAI';
 
-    console.log('OpenAI API response status:', response.status);
+    if (OPENAI_API_KEY) {
+      console.log('Attempting to call OpenAI API with model: gpt-4o-mini');
+      
+      try {
+        response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${OPENAI_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages: [
+              { role: 'system', content: systemPrompt },
+              ...messages
+            ],
+            stream: true,
+            temperature: 0.7,
+            max_tokens: 1000,
+          }),
+        });
+
+        console.log('OpenAI API response status:', response.status);
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('OpenAI API error:', response.status, errorText);
+          response = null; // Reset to trigger fallback
+        }
+      } catch (error) {
+        console.error('OpenAI API request failed:', error);
+        response = null; // Trigger fallback
+      }
+    }
+
+    // Fallback to Lovable AI if OpenAI failed or is not configured
+    if (!response && LOVABLE_API_KEY) {
+      console.log('Falling back to Lovable AI with model: google/gemini-2.5-flash');
+      provider = 'Lovable AI';
+      
+      response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.5-flash',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            ...messages
+          ],
+          stream: true,
+          temperature: 0.7,
+          max_tokens: 1000,
+        }),
+      });
+
+      console.log('Lovable AI response status:', response.status);
+    }
+
+    if (!response) {
+      console.error('No AI provider available');
+      throw new Error('No AI provider available');
+    }
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('OpenAI API error:', response.status, errorText);
+      console.error(`${provider} API error:`, response.status, errorText);
       
       if (response.status === 429) {
         console.error('Rate limit exceeded');
