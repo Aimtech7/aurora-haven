@@ -49,26 +49,79 @@ export type Database = {
           },
         ]
       }
+      report_status_changes: {
+        Row: {
+          changed_by: string | null
+          created_at: string
+          id: string
+          new_status: string
+          notes: string | null
+          old_status: string | null
+          report_id: string
+        }
+        Insert: {
+          changed_by?: string | null
+          created_at?: string
+          id?: string
+          new_status: string
+          notes?: string | null
+          old_status?: string | null
+          report_id: string
+        }
+        Update: {
+          changed_by?: string | null
+          created_at?: string
+          id?: string
+          new_status?: string
+          notes?: string | null
+          old_status?: string | null
+          report_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "report_status_changes_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reports: {
         Row: {
+          admin_notes: string | null
           created_at: string
           description: string
           expires_at: string
           id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string | null
+          tracking_id: string | null
           type_of_abuse: string
         }
         Insert: {
+          admin_notes?: string | null
           created_at?: string
           description: string
           expires_at?: string
           id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          tracking_id?: string | null
           type_of_abuse: string
         }
         Update: {
+          admin_notes?: string | null
           created_at?: string
           description?: string
           expires_at?: string
           id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          tracking_id?: string | null
           type_of_abuse?: string
         }
         Relationships: []
@@ -150,20 +203,36 @@ export type Database = {
       }
     }
     Views: {
-      admin_statistics: {
-        Row: {
-          reports_last_month: number | null
-          reports_last_week: number | null
-          total_evidence_files: number | null
-          total_reports: number | null
-          total_resources: number | null
-          total_services: number | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       delete_expired_reports: { Args: never; Returns: undefined }
+      generate_tracking_id: { Args: never; Returns: string }
+      get_admin_statistics: {
+        Args: never
+        Returns: {
+          reports_last_month: number
+          reports_last_week: number
+          reports_requires_action: number
+          reports_resolved: number
+          reports_submitted: number
+          reports_under_review: number
+          total_evidence_files: number
+          total_reports: number
+          total_resources: number
+          total_services: number
+        }[]
+      }
+      get_report_status: {
+        Args: { tracking_id_input: string }
+        Returns: {
+          created_at: string
+          id: string
+          status: string
+          tracking_id: string
+          type_of_abuse: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
