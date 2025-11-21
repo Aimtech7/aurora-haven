@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Upload, FileText, AlertCircle } from "lucide-react";
+import { Upload, FileText, AlertCircle, Copy, Download, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { EmergencyButton } from "@/components/EmergencyButton";
 import { Header } from "@/components/Header";
 import { supabase } from "@/integrations/supabase/client";
@@ -41,6 +42,31 @@ const Report = () => {
 
   const removeFile = (index: number) => {
     setFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const [trackingId, setTrackingId] = useState<string | null>(null);
+  const [showTrackingDialog, setShowTrackingDialog] = useState(false);
+
+  const copyToClipboard = () => {
+    if (trackingId) {
+      navigator.clipboard.writeText(trackingId);
+      toast.success("Tracking ID copied to clipboard");
+    }
+  };
+
+  const downloadTrackingInfo = () => {
+    if (!trackingId) return;
+    const text = `Digital Violence Report Tracking Information\n\nTracking ID: ${trackingId}\n\nIMPORTANT: Save this tracking ID to check your report status later.\nYou can track your report at: ${window.location.origin}/track-report\n\nThis is the only way to track your report. We cannot recover it if lost.`;
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `report-tracking-${trackingId}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast.success("Tracking information downloaded");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -91,11 +117,27 @@ const Report = () => {
         }
       }
 
-      toast.success("Report submitted successfully", {
-        description: "Your report has been recorded anonymously and securely.",
-      });
+      // Send notification to admin (non-blocking, don't wait for response)
+      supabase.functions
+        .invoke("report-notifications", {
+          body: {
+            tracking_id: report.tracking_id,
+            type_of_abuse: report.type_of_abuse,
+            submitted_at: report.created_at,
+          },
+        })
+        .catch((error) => {
+          console.error("Failed to send notification:", error);
+          // Don't fail the submission if notification fails
+        });
+
+      // Show tracking ID dialog
+      setTrackingId(report.tracking_id);
+      setShowTrackingDialog(true);
       
-      navigate("/");
+      // Reset form
+      setFormData({ type_of_abuse: "", description: "" });
+      setFiles([]);
     } catch (error) {
       console.error("Error submitting report:", error);
       toast.error("Failed to submit report", {
@@ -220,9 +262,72 @@ const Report = () => {
         </div>
       </main>
 
+      {/* Tracking ID Dialog */}
+      <Dialog open={showTrackingDialog} onOpenChange={setShowTrackingDialog}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <div className="flex items-center justify-center w-16 h-16 rounded-full bg-green-500/10 mx-auto mb-4">
+              <CheckCircle2 className="w-8 h-8 text-green-500" />
+            </div>
+            <DialogTitle className="text-center text-2xl">Report Submitted Successfully</DialogTitle>
+            <DialogDescription className="text-center">
+              Your report has been recorded anonymously and securely.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div className="p-4 bg-gradient-primary/10 border-2 border-primary/20 rounded-lg">
+              <p className="text-sm font-medium text-center mb-2">Your Tracking ID</p>
+              <p className="text-2xl font-mono font-bold text-center tracking-wider">
+                {trackingId}
+              </p>
+            </div>
+
+            <Alert className="bg-yellow-500/10 border-yellow-500/20">
+              <AlertCircle className="h-4 w-4 text-yellow-500" />
+              <AlertDescription className="text-sm">
+                <strong>IMPORTANT:</strong> Save this tracking ID. This is the only way to check your report status.
+                We cannot recover it if lost.
+              </AlertDescription>
+            </Alert>
+
+            <div className="grid grid-cols-2 gap-2">
+              <Button variant="outline" onClick={copyToClipboard} className="w-full">
+                <Copy className="w-4 h-4 mr-2" />
+                Copy ID
+              </Button>
+              <Button variant="outline" onClick={downloadTrackingInfo} className="w-full">
+                <Download className="w-4 h-4 mr-2" />
+                Download
+              </Button>
+            </div>
+
+            <div className="space-y-2">
+              <Button
+                onClick={() => navigate("/track-report")}
+                className="w-full"
+              >
+                Track Report Status
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setShowTrackingDialog(false);
+                  navigate("/");
+                }}
+                className="w-full"
+              >
+                Return Home
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <EmergencyButton />
     </div>
   );
 };
+
 
 export default Report;

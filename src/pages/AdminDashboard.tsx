@@ -17,6 +17,7 @@ import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AdminReportsTab } from "@/components/AdminReportsTab";
 import {
   Dialog,
   DialogContent,
@@ -44,6 +45,10 @@ interface Statistics {
   total_services: number;
   reports_last_week: number;
   reports_last_month: number;
+  reports_submitted: number;
+  reports_under_review: number;
+  reports_resolved: number;
+  reports_requires_action: number;
 }
 
 interface Resource {
@@ -118,12 +123,12 @@ const AdminDashboard = () => {
 
   const loadData = async () => {
     try {
-      // Load statistics
-      const { data: stats } = await supabase
-        .from("admin_statistics")
-        .select("*")
+      // Load statistics using function instead of view
+      const { data: stats, error: statsError } = await supabase
+        .rpc("get_admin_statistics")
         .single();
       
+      if (statsError) throw statsError;
       if (stats) setStatistics(stats);
 
       // Load resources
@@ -334,11 +339,17 @@ const AdminDashboard = () => {
         </section>
 
         {/* Management Tabs */}
-        <Tabs defaultValue="resources" className="space-y-6">
+        <Tabs defaultValue="reports" className="space-y-6">
           <TabsList>
+            <TabsTrigger value="reports">Reports</TabsTrigger>
             <TabsTrigger value="resources">Resources</TabsTrigger>
             <TabsTrigger value="services">Services</TabsTrigger>
           </TabsList>
+
+          {/* Reports Tab */}
+          <TabsContent value="reports">
+            <AdminReportsTab />
+          </TabsContent>
 
           {/* Resources Tab */}
           <TabsContent value="resources" className="space-y-4">

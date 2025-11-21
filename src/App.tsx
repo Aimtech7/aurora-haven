@@ -8,6 +8,7 @@ import Report from "./pages/Report";
 import Resources from "./pages/Resources";
 import Chatbot from "./pages/Chatbot";
 import Directory from "./pages/Directory";
+import TrackReport from "./pages/TrackReport";
 import EmergencyExit from "./pages/EmergencyExit";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -24,6 +25,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/report" element={<Report />} />
+          <Route path="/track-report" element={<TrackReport />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/chatbot" element={<Chatbot />} />
           <Route path="/directory" element={<Directory />} />
