@@ -180,6 +180,36 @@ export type Database = {
         }
         Relationships: []
       }
+      translations: {
+        Row: {
+          category: string
+          created_at: string
+          en: string
+          id: string
+          key: string
+          sw: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          en: string
+          id?: string
+          key: string
+          sw: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          en?: string
+          id?: string
+          key?: string
+          sw?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null
