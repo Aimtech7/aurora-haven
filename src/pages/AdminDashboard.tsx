@@ -18,6 +18,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminReportsTab } from "@/components/AdminReportsTab";
+import { AdminTranslationsTab } from "@/components/AdminTranslationsTab";
 import {
   Dialog,
   DialogContent,
@@ -344,6 +345,7 @@ const AdminDashboard = () => {
             <TabsTrigger value="reports">Reports</TabsTrigger>
             <TabsTrigger value="resources">Resources</TabsTrigger>
             <TabsTrigger value="services">Services</TabsTrigger>
+            <TabsTrigger value="translations">Translations</TabsTrigger>
           </TabsList>
 
           {/* Reports Tab */}
@@ -604,6 +606,11 @@ const AdminDashboard = () => {
                 </Card>
               ))}
             </div>
+          </TabsContent>
+
+          {/* Translations Tab */}
+          <TabsContent value="translations">
+            <AdminTranslationsTab />
           </TabsContent>
         </Tabs>
       </main>

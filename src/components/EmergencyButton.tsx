@@ -1,10 +1,12 @@
 import { Shield, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
+import { useTranslation } from "@/contexts/LanguageContext";
 
 export const EmergencyButton = () => {
   const [showWarning, setShowWarning] = useState(false);
   const [escCount, setEscCount] = useState(0);
+  const { t } = useTranslation();
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
@@ -53,9 +55,9 @@ export const EmergencyButton = () => {
             <div className="mx-auto w-12 h-12 rounded-full bg-destructive/10 flex items-center justify-center">
               <Shield className="w-6 h-6 text-destructive" />
             </div>
-            <h3 className="text-xl font-semibold">Emergency Exit</h3>
+            <h3 className="text-xl font-semibold">{t("emergency.title", "Emergency Exit")}</h3>
             <p className="text-muted-foreground">
-              This will immediately redirect you to Google. Your browsing history will not show this site.
+              {t("emergency.message", "This will immediately redirect you to Google. Your browsing history will not show this site.")}
             </p>
           </div>
           <div className="flex gap-3">
@@ -65,7 +67,7 @@ export const EmergencyButton = () => {
               onClick={() => setShowWarning(false)}
             >
               <X className="w-4 h-4 mr-2" />
-              Cancel
+              {t("common.cancel", "Cancel")}
             </Button>
             <Button
               variant="destructive"
@@ -73,7 +75,7 @@ export const EmergencyButton = () => {
               onClick={confirmExit}
             >
               <Shield className="w-4 h-4 mr-2" />
-              Exit Now
+              {t("emergency.button", "Exit Now")}
             </Button>
           </div>
           <p className="text-xs text-center text-muted-foreground">
@@ -90,9 +92,10 @@ export const EmergencyButton = () => {
       size="lg"
       onClick={handleClick}
       className="fixed bottom-6 right-6 rounded-full shadow-lg z-40 h-14 w-14 p-0"
+      title={t("emergency.button", "Emergency Exit")}
     >
       <Shield className="w-6 h-6" />
-      <span className="sr-only">Emergency Exit</span>
+      <span className="sr-only">{t("emergency.button", "Emergency Exit")}</span>
     </Button>
   );
 };

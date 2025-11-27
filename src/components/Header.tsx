@@ -3,18 +3,21 @@ import { Shield, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/contexts/LanguageContext";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 export const Header = () => {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { t } = useTranslation();
 
   const navItems = [
-    { path: "/", label: "Home" },
-    { path: "/report", label: "Report" },
-    { path: "/track-report", label: "Track Report" },
-    { path: "/resources", label: "Resources" },
-    { path: "/chatbot", label: "Support Chat" },
-    { path: "/directory", label: "Directory" },
+    { path: "/", label: t("nav.home", "Home") },
+    { path: "/report", label: t("nav.report", "Report") },
+    { path: "/track-report", label: t("nav.track", "Track Report") },
+    { path: "/resources", label: t("nav.resources", "Resources") },
+    { path: "/chatbot", label: t("nav.chatbot", "Chatbot") },
+    { path: "/directory", label: t("nav.directory", "Directory") },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -46,21 +49,24 @@ export const Header = () => {
                 {item.label}
               </Link>
             ))}
+            <LanguageSwitcher />
           </nav>
 
           {/* Mobile Menu Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? (
-              <X className="w-5 h-5" />
-            ) : (
-              <Menu className="w-5 h-5" />
-            )}
-          </Button>
+          <div className="md:hidden flex items-center gap-2">
+            <LanguageSwitcher />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
+            </Button>
+          </div>
         </div>
 
         {/* Mobile Navigation */}
