@@ -5,8 +5,11 @@ import { Card } from "@/components/ui/card";
 import { EmergencyButton } from "@/components/EmergencyButton";
 import { Header } from "@/components/Header";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Home = () => {
+  const { user } = useAuth();
+
   const features = [
     {
       icon: FileText,
@@ -95,6 +98,14 @@ const Home = () => {
                 Report Incident
               </Link>
             </Button>
+            {!user && (
+              <Button asChild variant="secondary" size="lg" className="rounded-full hover-scale">
+                <Link to="/auth">
+                  <Users className="w-5 h-5 mr-2" />
+                  Create Account
+                </Link>
+              </Button>
+            )}
           </div>
 
           {/* Trust Indicators */}

@@ -49,6 +49,33 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          email: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       report_status_changes: {
         Row: {
           changed_by: string | null
@@ -99,6 +126,7 @@ export type Database = {
           status: string | null
           tracking_id: string | null
           type_of_abuse: string
+          user_id: string | null
         }
         Insert: {
           admin_notes?: string | null
@@ -111,6 +139,7 @@ export type Database = {
           status?: string | null
           tracking_id?: string | null
           type_of_abuse: string
+          user_id?: string | null
         }
         Update: {
           admin_notes?: string | null
@@ -123,6 +152,7 @@ export type Database = {
           status?: string | null
           tracking_id?: string | null
           type_of_abuse?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -207,6 +237,45 @@ export type Database = {
           key?: string
           sw?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      user_preferences: {
+        Row: {
+          created_at: string
+          email_notifications: boolean | null
+          id: string
+          language: string | null
+          privacy_level: string | null
+          report_status_notifications: boolean | null
+          resource_updates: boolean | null
+          theme: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email_notifications?: boolean | null
+          id?: string
+          language?: string | null
+          privacy_level?: string | null
+          report_status_notifications?: boolean | null
+          resource_updates?: boolean | null
+          theme?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email_notifications?: boolean | null
+          id?: string
+          language?: string | null
+          privacy_level?: string | null
+          report_status_notifications?: boolean | null
+          resource_updates?: boolean | null
+          theme?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
