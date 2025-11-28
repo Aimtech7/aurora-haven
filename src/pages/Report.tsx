@@ -12,10 +12,14 @@ import { EmergencyButton } from "@/components/EmergencyButton";
 import { Header } from "@/components/Header";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const Report = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [submitting, setSubmitting] = useState(false);
+  const [linkToAccount, setLinkToAccount] = useState(true);
   const [formData, setFormData] = useState({
     type_of_abuse: "",
     description: "",
@@ -86,6 +90,7 @@ const Report = () => {
         .insert({
           type_of_abuse: formData.type_of_abuse,
           description: formData.description,
+          user_id: user && linkToAccount ? user.id : null,
         })
         .select()
         .single();
@@ -253,6 +258,24 @@ const Report = () => {
                   </p>
                 </div>
               </div>
+
+              {user && (
+                <div className="flex items-center space-x-2 p-4 bg-muted rounded-lg">
+                  <Checkbox
+                    id="link-account"
+                    checked={linkToAccount}
+                    onCheckedChange={(checked) => setLinkToAccount(checked === true)}
+                  />
+                  <div className="flex-1">
+                    <Label htmlFor="link-account" className="text-sm font-medium cursor-pointer">
+                      Link this report to my account
+                    </Label>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      You'll be able to track this report from your profile. Otherwise, save the tracking ID after submission.
+                    </p>
+                  </div>
+                </div>
+              )}
 
               <Button type="submit" className="w-full" disabled={submitting}>
                 {submitting ? "Submitting..." : "Submit Report"}

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/contexts/LanguageContext";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { UserMenu } from "./UserMenu";
 
 export const Header = () => {
   const location = useLocation();
@@ -50,11 +51,13 @@ export const Header = () => {
               </Link>
             ))}
             <LanguageSwitcher />
+            <UserMenu />
           </nav>
 
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center gap-2">
             <LanguageSwitcher />
+            <UserMenu />
             <Button
               variant="ghost"
               size="icon"
