@@ -1,73 +1,76 @@
-# Welcome to your Lovable project
+# 🌸 Aurora Haven – Survivor Hub & Information System  
+### Empowering Women & Girls Through Safe Digital Spaces
 
-## Project info
+![GitHub repo size](https://img.shields.io/github/repo-size/Aimtech7/aurora-haven?color=purple)
+![GitHub contributors](https://img.shields.io/github/contributors/Aimtech7/aurora-haven?color=ff69b4)
+![GitHub last commit](https://img.shields.io/github/last-commit/Aimtech7/aurora-haven?color=blueviolet)
+![GitHub license](https://img.shields.io/github/license/Aimtech7/aurora-haven?color=lightgrey)
+![Issues](https://img.shields.io/github/issues/Aimtech7/aurora-haven?color=red)
+![Stars](https://img.shields.io/github/stars/Aimtech7/aurora-haven?style=social)
 
-**URL**: https://lovable.dev/projects/1d43de27-a604-4d7f-91de-cb3000bf7e44
+### 🌼 Custom Survivor Badge  
+![Survivor Safe Space](https://img.shields.io/badge/Survivor%20Safe%20Space-Aurora%20Haven-pink?style=for-the-badge&logo=heart&logoColor=white)
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 🌟 Overview
 
-**Use Lovable**
+**Aurora Haven** is a digital **Survivor Hub & Information System** designed for the  
+**Coding Safety for All Women & Girls Hackathon** under the theme:
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/1d43de27-a604-4d7f-91de-cb3000bf7e44) and start prompting.
+> **UNITE to End Digital Violence Against All Women & Girls**
 
-Changes made via Lovable will be committed automatically to this repo.
+This project provides a safe, accessible, and empowering platform for women and girls facing digital violence. It also equips communities, volunteers, and allies with tools to **report abuse**, **access verified information**, **find support**, and **learn digital safety skills**.
 
-**Use your preferred IDE**
+---
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 🎯 Core Features
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### 🛡 Survivor Support Hub  
+- Anonymous reporting system  
+- Step-by-step safety guides  
+- Emergency exit button  
+- Quick-delete browsing safety tips  
 
-Follow these steps:
+### 📚 Information & Resource Centre  
+- Educational content on online safety  
+- Legal rights & support information  
+- Verified helplines and reporting channels  
+- Offline-friendly guides
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### 🧠 Mental & Emotional Wellness  
+- Wellness routines  
+- Guided breathing exercises  
+- Mental health resources  
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### 🗺 Safe Community  
+- Community awareness tools  
+- Volunteer support listings  
+- Bystander intervention guides  
 
-# Step 3: Install the necessary dependencies.
-npm i
+---
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+## 🧰 Tech Stack
 
-**Edit a file directly in GitHub**
+### **Frontend**
+- HTML5, CSS3, JS  
+- Bootstrap 5  
+- Responsive UI/UX  
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### **Backend (Optional Setup)**
+- Python (Flask) / Node.js (Express)  
+- REST API endpoints  
+- Simple JSON-based mock data  
 
-**Use GitHub Codespaces**
+### **Tools & Skills Used**  
+- UI/UX Design  
+- Cyber Safety Research  
+- Content Structuring  
+- Git & GitHub  
+- Hackathon Problem-Solving  
+- Mobile-first design principles  
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+---
 
-## What technologies are used for this project?
+## 📦 Project Structure
 
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/1d43de27-a604-4d7f-91de-cb3000bf7e44) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
