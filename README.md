@@ -74,3 +74,78 @@ This project provides a safe, accessible, and empowering platform for women and 
 
 ## 📦 Project Structure
 
+aurora-haven/
+│── public/
+│ ├── assets/
+│ ├── survivor-guides/
+│── src/
+│ ├── css/
+│ ├── js/
+│ ├── pages/
+│── docs/
+│── README.md
+│── index.html
+
+
+---
+
+## 🚀 How to Run the Project
+
+### **1️⃣ Clone the Repository**
+```bash
+git clone https://github.com/Aimtech7/aurora-haven.git
+
+2️⃣ Navigate to the Folder
+cd aurora-haven
+3️⃣ Open in Browser
+
+Just open index.html on your browser, or use Live Server:
+npx live-server
+
+🧩 How to Use Aurora Haven
+✔ For Survivors
+
+Navigate through the Survivor Hub for guides, help, and emergency information.
+
+✔ For Community & Allies
+
+Access the Resource Centre to learn how to support victims of digital violence.
+
+✔ For Developers
+
+Review the clear directory structure and extend pages, APIs, or UI components.
+
+🧪 Future Improvements
+
+Add user authentication
+
+Integrate AI chatbot for survivor guidance
+
+Connect real APIs for reporting
+
+Multilingual support
+
+Mobile App (Flutter or React Native)
+
+💖 Hackathon Purpose
+
+This project contributes to the global movement to protect women and girls from digital violence through:
+
+awareness
+
+tech-based solutions
+
+community support
+
+courage and collaboration
+
+📜 License
+
+This project is released under the MIT License.
+
+👩‍💻 Developer
+
+Built with purpose and passion by Aimtech7
+For the Coding Safety For All Women & Girls Hackathon – Power Learn Project
+
+🌺 “Safety is something we build together — with courage, technology, and community.”
